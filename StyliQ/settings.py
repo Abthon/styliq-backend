@@ -116,14 +116,27 @@ WSGI_APPLICATION = 'StyliQ.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# Option 1: Use DATABASE_URL (recommended for Render)
+# Database configuration for Render deployment
 import dj_database_url
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://styliq_user:DpZ1Id5skSDKl5eiQt1Wkfll9vj2yatf@dpg-d3huvuali9vc739979hg-a/styliq',
-        conn_max_age=600
-    )
-}
+
+# Check if we're on Render (DATABASE_URL will be set by Render)
+# If DATABASE_URL contains 'db:5432', it's likely from Docker, so override it
+database_url = env('DATABASE_URL', default='')
+
+if 'db:5432' in database_url or not database_url:
+    # Use Render PostgreSQL URL
+    RENDER_DATABASE_URL = 'postgresql://styliq_user:DpZ1Id5skSDKl5eiQt1Wkfll9vj2yatf@dpg-d3huvuali9vc739979hg-a/styliq'
+    DATABASES = {
+        'default': dj_database_url.parse(RENDER_DATABASE_URL)
+    }
+else:
+    # Use the provided DATABASE_URL
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgresql://styliq_user:DpZ1Id5skSDKl5eiQt1Wkfll9vj2yatf@dpg-d3huvuali9vc739979hg-a/styliq',
+            conn_max_age=600
+        )
+    }
 
 # Option 2: Individual environment variables (fallback)
 # DATABASES = {

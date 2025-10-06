@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+# For Render deployment, use the Render PostgreSQL host
+DB_HOST=${DB_HOST:-"dpg-d3huvuali9vc739979hg-a"}
+DB_PORT=${DB_PORT:-"5432"}
+
 # Wait for Postgres to be ready
 echo "⏳ Waiting for Postgres at $DB_HOST:$DB_PORT..."
 while ! nc -z $DB_HOST $DB_PORT; do
