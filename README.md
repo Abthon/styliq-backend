@@ -1,0 +1,2 @@
+# StyliQ
+booking platform

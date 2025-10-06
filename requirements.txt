@@ -1,0 +1,15 @@
+Django>=4.2
+djangorestframework
+django-environ
+django-redis
+drf-spectacular
+psycopg2-binary
+gunicorn
+whitenoise
+twilio
+djangorestframework-simplejwt[crypto]
+Pillow
+celery
+django-celery-beat
+
+
