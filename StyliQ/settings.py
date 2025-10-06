@@ -42,12 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_beat',
+    # 'django_celery_beat',  # Commented out for Render deployment
 
     # Third‑party
     'rest_framework',
     'drf_spectacular',
-    'django_redis',
+    # 'django_redis',  # Commented out for Render deployment
 
     # Your apps
     'users',
@@ -116,32 +116,42 @@ WSGI_APPLICATION = 'StyliQ.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# Option 1: Use DATABASE_URL (recommended for Render)
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB'),
-        'USER': env('POSTGRES_USER'),
-        'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
-    }
+    'default': dj_database_url.config(
+        default='postgresql://styliq_user:DpZ1Id5skSDKl5eiQt1Wkfll9vj2yatf@dpg-d3huvuali9vc739979hg-a/styliq',
+        conn_max_age=600
+    )
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': env('REDIS_URL'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
-    }
-}
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
+# Option 2: Individual environment variables (fallback)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('POSTGRES_DB', default='styliq'),
+#         'USER': env('POSTGRES_USER', default='styliq_user'),
+#         'PASSWORD': env('POSTGRES_PASSWORD', default='DpZ1Id5skSDKl5eiQt1Wkfll9vj2yatf'),
+#         'HOST': env('POSTGRES_HOST', default='dpg-d3huvuali9vc739979hg-a'),
+#         'PORT': env('POSTGRES_PORT', default=5432),
+#     }
+# }
+
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': env('REDIS_URL'),
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }  # Commented out for Render deployment
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'  # Commented out for Render deployment
+# SESSION_CACHE_ALIAS = 'default'  # Commented out for Render deployment
 
 
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+# CELERY_BROKER_URL = 'redis://redis:6379/0'  # Commented out for Render deployment
+# CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'  # Commented out for Render deployment
 
 
 
